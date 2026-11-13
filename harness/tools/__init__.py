@@ -1,9 +1,11 @@
-#Re-export the registry for convenient 'from harness tools import registry'.
+# Re-export the registry for convenient 'from harness tools import registry'.
 
 from harness.tools.registry import registry
 
-#Import each tool module for its side effects 
+# Import each tool module for its side effects
 # (the @tool decorators run on import).
 
-#Add new tool category? Add its import here.
+# Add new tool category? Add its import here.
 from harness.tools import filesystem
+
+from harness.tools import git
