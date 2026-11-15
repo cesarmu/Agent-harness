@@ -1,14 +1,15 @@
 """Filesystem tools: read, write, list, delete — all bounded to the workspace."""
 
 from pathlib import Path
+from harness.configuration.config import SYSTEM_WORKSPACE
 from harness.tools.registry import tool
 
 # crfefrom config import SYSTEM_WORKSPACE
 
 # The workspace directory. All filesystem tools operate inside this.
 # We resolve it once at import to a canonical absolute path.
-WORKSPACE = Path("./workspace").resolve()
-# WORKSPACE = SYSTEM_WORKSPACE
+# WORKSPACE = Path("./workspace").resolve()
+WORKSPACE = SYSTEM_WORKSPACE
 
 # Create the workspace directory if it doesn't exist. Idempotent.
 WORKSPACE.mkdir(exist_ok=True)

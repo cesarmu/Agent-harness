@@ -3,10 +3,12 @@ import json
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from harness.configuration import config
 from harness.tools import registry
 from harness.memory import load_agents_md
 
 load_dotenv()
+app_config = config.load_config()
 
 # Decide which backend to use based on which key is set in .env.
 # This is a configuration-time choice — change .env, not code.
@@ -21,8 +23,11 @@ if os.getenv("KIMI_API_KEY"):
     # to handle, no preservation requirements in multi-turn dispatch.
     EXTRA_BODY = {"thinking": {"type": "disabled"}}
 else:
-    MODEL = "gpt-4.1-mini"
-    client = OpenAI()  # Reads OPENAI_API_KEY from environment, default base URL.
+    # MODEL = "gpt-4.1-mini"
+    MODEL = app_config.openai_model
+    client = OpenAI(
+        api_key=app_config.openai_api_key
+    )  # Reads OPENAI_API_KEY from environment, default base URL.
     EXTRA_BODY = {}
 
 SYSTEM_PROMPT = """

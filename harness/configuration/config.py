@@ -17,6 +17,8 @@ PROJECT_DIR = Path(__file__).resolve().parent
 SYSTEM_PROMPT_PATH = PROJECT_DIR / "prompts" / "system_prompt.txt"
 SYSTEM_WORKSPACE = Path("./workspace").resolve()
 
+class ConfigServiceError(RuntimeError):
+    """Raised when try to get out of workspace."""
 
 @dataclass(frozen=True)
 class AppConfig:
@@ -24,14 +26,14 @@ class AppConfig:
 
     app_title: str
     provider: str
-    #ollama_base_url: str
-    #ollama_model: str
+    # ollama_base_url: str
+    # ollama_model: str
     openai_model: str
     openai_api_key: str
-    #system_prompt: str
+    # system_prompt: str
 
 
-#def _read_system_prompt() -> str:
+# def _read_system_prompt() -> str:
 #    """Load the assistant's system prompt from the prompts folder."""
 #    if SYSTEM_PROMPT_PATH.exists():
 #        return SYSTEM_PROMPT_PATH.read_text(encoding="utf-8").strip()
@@ -50,9 +52,9 @@ def load_config() -> AppConfig:
     return AppConfig(
         app_title=os.getenv("APP_TITLE", "Build Your First Harness App."),
         provider=provider,
-        #ollama_base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").rstrip("/"),
-        #ollama_model=os.getenv("OLLAMA_MODEL", "smollm"),
+        # ollama_base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").rstrip("/"),
+        # ollama_model=os.getenv("OLLAMA_MODEL", "smollm"),
         openai_model=os.getenv("OPENAI_MODEL", "gpt-4.1-mini"),
         openai_api_key=os.getenv("OPENAI_API_KEY", ""),
-        #system_prompt=_read_system_prompt(),
+        # system_prompt=_read_system_prompt(),
     )
