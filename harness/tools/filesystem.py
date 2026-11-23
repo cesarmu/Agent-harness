@@ -2,7 +2,7 @@
 
 from pathlib import Path
 from harness.tools.registry import tool
-from harness.config import SYSTEM_WORKSPACE
+from harness.config import WORKSPACE
 
 # crfefrom config import SYSTEM_WORKSPACE
 
@@ -12,7 +12,7 @@ from harness.config import SYSTEM_WORKSPACE
 # WORKSPACE = SYSTEM_WORKSPACE
 
 # Create the workspace directory if it doesn't exist. Idempotent.
-SYSTEM_WORKSPACE.mkdir(exist_ok=True)
+WORKSPACE.mkdir(exist_ok=True)
 
 
 class FileSystemServiceError(RuntimeError):
@@ -30,11 +30,11 @@ def _resolve_path(path: str) -> Path:
     # Step 1: join the user-supplied path against the workspace, then canonicalize.
     # Canonicalization expands `..` segments — without it, `../../../etc/passwd`
     # would slip past the check below.
-    target = (SYSTEM_WORKSPACE / path).resolve()
+    target = (WORKSPACE / path).resolve()
 
     # Step 2: confirm the canonical path is still inside WORKSPACE.
     # If `..` walked the path out of the workspace, this catches it.
-    if not target.is_relative_to(SYSTEM_WORKSPACE):
+    if not target.is_relative_to(WORKSPACE):
         raise FileSystemServiceError(f"path escapes workspace: {path}")
 
     return target

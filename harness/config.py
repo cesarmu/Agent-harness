@@ -72,5 +72,5 @@ DENY_LIST: set[str] = {
 }
 
 
-'''Route where the system can work on'''
-SYSTEM_WORKSPACE = Path("./workspace").resolve()
+"""Route where the system can work on"""
+WORKSPACE = Path("./workspace").resolve()

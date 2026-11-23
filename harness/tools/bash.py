@@ -1,7 +1,7 @@
 """Bash tool: the meta-tool that gives the agent access to the shell."""
 
 import subprocess
-from harness.tools.filesystem import SYSTEM_WORKSPACE
+from harness.tools.filesystem import WORKSPACE
 from harness.tools.registry import tool
 from harness.config import ALLOW_LIST, DENY_LIST, BASH_TIMEOUT
 
@@ -109,7 +109,7 @@ def bash(command: str) -> str:
         result = subprocess.run(
             command,
             shell=True,
-            cwd=SYSTEM_WORKSPACE,
+            cwd=WORKSPACE,
             capture_output=True,
             text=True,
             timeout=BASH_TIMEOUT,

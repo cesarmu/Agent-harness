@@ -5,10 +5,10 @@ injects its contents as a second system message. The agent uses its
 existing `write` tool to update the file as it learns.
 """
 
-from harness.tools.filesystem import SYSTEM_WORKSPACE
+from harness.tools.filesystem import WORKSPACE
 
 # The single memory file for the workspace.
-AGENTS_MD_PATH = SYSTEM_WORKSPACE / "AGENTS.md"
+AGENTS_MD_PATH = WORKSPACE / "AGENTS.md"
 
 
 # The template written when AGENTS.md doesn't yet exist. The section
