@@ -1,18 +1,18 @@
 """Filesystem tools: read, write, list, delete — all bounded to the workspace."""
 
 from pathlib import Path
-from harness.configuration.config import SYSTEM_WORKSPACE
 from harness.tools.registry import tool
+from harness.config import SYSTEM_WORKSPACE
 
 # crfefrom config import SYSTEM_WORKSPACE
 
 # The workspace directory. All filesystem tools operate inside this.
 # We resolve it once at import to a canonical absolute path.
 # WORKSPACE = Path("./workspace").resolve()
-WORKSPACE = SYSTEM_WORKSPACE
+# WORKSPACE = SYSTEM_WORKSPACE
 
 # Create the workspace directory if it doesn't exist. Idempotent.
-WORKSPACE.mkdir(exist_ok=True)
+SYSTEM_WORKSPACE.mkdir(exist_ok=True)
 
 
 class FileSystemServiceError(RuntimeError):
@@ -30,11 +30,11 @@ def _resolve_path(path: str) -> Path:
     # Step 1: join the user-supplied path against the workspace, then canonicalize.
     # Canonicalization expands `..` segments — without it, `../../../etc/passwd`
     # would slip past the check below.
-    target = (WORKSPACE / path).resolve()
+    target = (SYSTEM_WORKSPACE / path).resolve()
 
     # Step 2: confirm the canonical path is still inside WORKSPACE.
     # If `..` walked the path out of the workspace, this catches it.
-    if not target.is_relative_to(WORKSPACE):
+    if not target.is_relative_to(SYSTEM_WORKSPACE):
         raise FileSystemServiceError(f"path escapes workspace: {path}")
 
     return target

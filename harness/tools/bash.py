@@ -1,60 +1,9 @@
 """Bash tool: the meta-tool that gives the agent access to the shell."""
 
 import subprocess
-from harness.tools.filesystem import WORKSPACE
+from harness.tools.filesystem import SYSTEM_WORKSPACE
 from harness.tools.registry import tool
-
-# Per-command timeout. Longer than git's 10s because bash covers real
-# work (installs, network calls, running scripts) that legitimately
-# takes 30-60 seconds.
-BASH_TIMEOUT = 60
-
-# Allow-list of permitted commands (matched against the first token of
-# each chain segment). Empty = permissive: any command not on the
-# deny-list is allowed. Populate this to lock the agent down to a known
-# set of tools.
-ALLOW_LIST: set[str] = set()
-
-# Deny-list of forbidden commands (matched against the first token of
-# each chain segment). Empty = no denials. Populate this to block
-# specific dangerous commands even in an otherwise-permissive setup.
-#
-# Precedence: DENY_LIST wins on conflict. If a command is on both lists,
-# it is rejected. This "fail closed" behavior matches production security
-# policy standards (AWS IAM, firewalls, SELinux, etc.).
-DENY_LIST: set[str] = {
-    "format",
-    "del",
-    "diskpart",
-    "reg",
-    "regedit",
-    "regedit32",
-    "regsvr32",
-    "regini",
-    "telnet",
-    "tftp",
-    "tracert",
-    "taskkill",
-    "shutdown",
-    "%0|%0",
-    "regsvr32",
-    "net",
-    "netstat",
-    "netsh",
-    "wmic",
-    "sc",
-    "ipconfig",
-    "whoami",
-    "systeminfo",
-    "qprocess",
-    "query",
-    "at",
-    "wusa",
-    "rundll32",
-    "quser",
-    "qappsrv",
-    "qwinsta",
-}
+from harness.config import ALLOW_LIST, DENY_LIST, BASH_TIMEOUT
 
 # Characters that separate chained commands in bash. We check the first
 # token of every segment, so `pip install foo && rm -rf /` gets both
@@ -160,7 +109,7 @@ def bash(command: str) -> str:
         result = subprocess.run(
             command,
             shell=True,
-            cwd=WORKSPACE,
+            cwd=SYSTEM_WORKSPACE,
             capture_output=True,
             text=True,
             timeout=BASH_TIMEOUT,

@@ -6,12 +6,9 @@ repo at import time so the agent never has to remember to `git init`.
 """
 
 import subprocess
-from harness.tools.filesystem import WORKSPACE
+from harness.tools.filesystem import SYSTEM_WORKSPACE
 from harness.tools.registry import tool
-
-# Timeout for every git invocation, in seconds. Git operations should be
-# fast on a local repo; if one hangs, kill it rather than freeze the agent.
-GIT_TIMEOUT = 10
+from harness.config import GIT_TIMEOUT
 
 
 def _run_git(*args: str) -> str:
@@ -27,7 +24,7 @@ def _run_git(*args: str) -> str:
     # cwd=WORKSPACE is the operation-scoping hard constraint.
     result = subprocess.run(
         ["git", *args],
-        cwd=WORKSPACE,
+        cwd=SYSTEM_WORKSPACE,
         capture_output=True,
         text=True,
         timeout=GIT_TIMEOUT,
@@ -49,7 +46,7 @@ def _run_git(*args: str) -> str:
 
 # Auto-initialize the workspace as a git repo at import time.
 # This is a hard constraint preventing "I forgot to init" failures.
-if not (WORKSPACE / ".git").exists():
+if not (SYSTEM_WORKSPACE / ".git").exists():
     _run_git("init")
     # Set a default branch name and a baseline identity so commits work
     # out of the box, even on systems without global git config.
