@@ -4,7 +4,7 @@ import subprocess
 from harness.tools.filesystem import WORKSPACE
 from harness.tools.registry import tool
 from harness.config import ALLOW_LIST, DENY_LIST, BASH_TIMEOUT
-from harness.sanbox import Sandbox
+from harness.sandbox import Sandbox
 
 # Module-level sandbox reference. Set once at startup by agent.py via
 # set_sandbox(). The bash tool reads this at call time. This is the

@@ -7,7 +7,7 @@ from pathlib import Path
 from harness.tools import registry
 from harness.memory import load_agents_md
 from harness.config import MODEL, STEP_BUDGET
-from harness.sanbox import Sandbox
+from harness.sandbox import Sandbox
 from harness.tools.bash import set_sandbox
 
 load_dotenv()
