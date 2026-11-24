@@ -12,7 +12,7 @@ from pathlib import Path
 
 # -- Model configuration --
 # The chat completion model the harness calls. Any OpenAI-compatible
-# model ID works (e.g., "gpt-4o-mini", "kimi-k2.6").
+# model ID works (e.g., "gpt-4o-mini", "gpt-5.4",  "kimi-k2.6").
 MODEL: str = "gpt-4.1-mini"
 
 
@@ -33,42 +33,39 @@ GIT_TIMEOUT: int = 10
 # -- Bash command policy --
 # Allow-list of permitted commands (matched against the first token of
 # each chain segment). Empty = permissive.
-ALLOW_LIST: set[str] = set()
+ALLOW_LIST: set[str] = {
+    # Language interpreters and package managers
+    "python",
+    "python3",
+    "pip",
+    "pip3",
+    # Basic file inspection
+    "ls",
+    "cat",
+    "wc",
+    "grep",
+    "find",
+    "head",
+    "tail",
+    # Network tools (the agent may want to probe the URL first)
+    "curl",
+    # System info
+    "which",
+    "echo",
+    "pwd",
+    # Git — though the agent should prefer the git_* tools first
+    "git",
+}
 
 # Deny-list of forbidden commands. Empty = no denials.
 # Precedence: deny wins on conflict. See Lesson 4.5.
 DENY_LIST: set[str] = {
-    "format",
-    "del",
-    "diskpart",
-    "reg",
-    "regedit",
-    "regedit32",
-    "regsvr32",
-    "regini",
-    "telnet",
-    "tftp",
-    "tracert",
-    "taskkill",
-    "shutdown",
-    "%0|%0",
-    "regsvr32",
-    "net",
-    "netstat",
-    "netsh",
-    "wmic",
-    "sc",
-    "ipconfig",
-    "whoami",
-    "systeminfo",
-    "qprocess",
-    "query",
-    "at",
-    "wusa",
-    "rundll32",
-    "quser",
-    "qappsrv",
-    "qwinsta",
+    # Destructive commands with no place in a scraping task
+    "rm",
+    "sudo",
+    "dd",
+    "mkfs",
+    "mv",
 }
 
 
