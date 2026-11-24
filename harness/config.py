@@ -74,3 +74,21 @@ DENY_LIST: set[str] = {
 
 """Route where the system can work on"""
 WORKSPACE = Path("./workspace").resolve()
+
+# -- Sandbox configuration --
+# The Docker image used for the containerized bash tool.
+SANDBOX_IMAGE: str = "python:3.11-slim"
+
+# Where the workspace is mounted inside the container. All bash commands
+# see this path as their working directory. Bind-mounted from the host's
+# workspace/ directory, so files written here appear on the host too.
+SANDBOX_WORKSPACE_PATH: str = "/workspace"
+
+# How long to wait for the container to reach "running" state after
+# creation. If Docker takes longer than this, something is wrong
+# (image not pulled yet, daemon slow, etc.) and we fail loudly.
+SANDBOX_STARTUP_TIMEOUT: int = 30
+
+# Prefix for container names. Used to identify our containers when
+# cleaning up orphans from previous sessions on startup.
+SANDBOX_CONTAINER_PREFIX: str = "agent-harness-"
