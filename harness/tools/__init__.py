@@ -13,3 +13,5 @@ from harness.tools import git
 from harness.tools import bash
 
 from harness.tools import web_search
+
+from harness.rag import recall    # noqa: F401 — imported for side effects

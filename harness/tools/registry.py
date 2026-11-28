@@ -9,10 +9,36 @@ import inspect
 @dataclass
 class Tool:
     """A registered tool — wraps a Python function with its metadata."""
+
     name: str
     description: str
     function: Callable
     schema: dict
+
+
+def _format_tool_call(name: str, arguments: dict) -> str:
+    """Format a tool call for terminal display, matching demo convention.
+
+    Produces `[tool_name(arg1="value1", arg2="value2")]`. Long values are
+    truncated with an ellipsis to keep the line readable. Newlines in
+    values become the literal string \\n so the log line stays on one row.
+    """
+    # Step 1: format each argument. Strings get quoted; other types get
+    # str()'d. Long values get truncated to keep the line manageable.
+    formatted_args = []
+    for key, value in arguments.items():
+        if isinstance(value, str):
+            # Replace newlines with literal \n so the log stays one line.
+            display_value = value.replace("\n", "\\n")
+            # Truncate long values with ellipsis at 80 chars.
+            if len(display_value) > 80:
+                display_value = display_value[:77] + "..."
+            formatted_args.append(f'{key}="{display_value}"')
+        else:
+            formatted_args.append(f"{key}={value!r}")
+
+    args_str = ", ".join(formatted_args)
+    return f"[{name}({args_str})]"
 
 
 class ToolRegistry:
@@ -47,6 +73,10 @@ class ToolRegistry:
         if name not in self._tools:
             return f"error: unknown tool '{name}'"
 
+        # Log the tool call before execution so you see the invocation even if
+        # the tool subsequently crashes or hangs.
+        print(_format_tool_call(name, arguments))
+
         # Run the tool, catching any exception so a buggy call doesn't crash the loop.
         # The model sees the error string and decides what to do next.
         try:
@@ -76,12 +106,14 @@ def tool(func: Callable) -> Callable:
     schema = TypeAdapter(func).json_schema()
 
     # Step 3: register the tool in the global registry.
-    registry.register(Tool(
-        name=name,
-        description=description,
-        function=func,
-        schema=schema,
-    ))
+    registry.register(
+        Tool(
+            name=name,
+            description=description,
+            function=func,
+            schema=schema,
+        )
+    )
 
     # Step 4: return the function unchanged so it can still be called directly.
     return func
